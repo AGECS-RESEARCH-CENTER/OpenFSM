@@ -40,18 +40,20 @@ namespace EigenValue_Problem
         //For Testing
         Vector<double> EigenValues;
 
+        //For pre-solving message box
+        private bool solvingMessageAppeared = false;
 
         //For output naming
         private string output1stPartPathName;
         private string outputPathName;
         private int runs;
-
-        //For signature curve
-        private BindingList<SignatureCurvePoint> signatureCurvePoints;
+        private int parametricRuns;
+        private bool parametricRunIncremented = false;
 
         public NewForm()
         {
             runs = 0;
+            parametricRuns = 0;
 
             InitializeComponent();
 
@@ -74,13 +76,30 @@ namespace EigenValue_Problem
 
         private void SetupOutputFolder()
         {
-            if (runs < 1)
+            if (runs < 1 && parametricRuns < 1)
             {
                 output1stPartPathName = DateTime.Now.ToString("dd-MM-yyyy h-mm-ss tt");
             }
-            runs++;
+
+            string currentRun;
+            if (IsParametric)
+            {
+                if (!parametricRunIncremented)
+                {
+                    currentRun = ++parametricRuns + " [Parametric]";
+                    parametricRunIncremented = true;
+                }
+                else
+                {
+                    currentRun = parametricRuns + " [Parametric]";
+                }
+            }
+            else
+            {
+                currentRun = ++runs  + " [Normal]";
+            }
             outputPathName = Path.Combine("OpenFSM", Environment.GetFolderPath(
-                    Environment.SpecialFolder.MyDocuments), output1stPartPathName, "Run no." + runs);
+                    Environment.SpecialFolder.MyDocuments), output1stPartPathName, "Run no." + currentRun);
             if (!File.Exists(outputPathName))
             {
                 Directory.CreateDirectory(outputPathName);
@@ -2604,11 +2623,9 @@ namespace EigenValue_Problem
 
         private void SolveButton_Click(object sender, EventArgs e)
         {
-
-            {
-                IsParametric = false;
-                Solve();
-            }
+            solvingMessageAppeared = false;
+            IsParametric = false;
+            Solve();
         }
         private void btnparametric_Click(object sender, EventArgs e)
         {
@@ -2661,6 +2678,7 @@ namespace EigenValue_Problem
                 MessageBox.Show(msg);
                 return;
             }
+            solvingMessageAppeared = false;
 
             var cases = GetCases();
             foreach (var caseA in cases)
@@ -2684,12 +2702,13 @@ namespace EigenValue_Problem
 
                 Solve(materials, elems);
             }
+            parametricRunIncremented = false;
             Process.Start(Path.Combine(outputPathName, "summary.csv"));
 
 
 
 
-            //#region Parse input from files
+            #region Parse input from files
             ////Read Values from files
             ////var all_materials_txt = System.IO.File.ReadAllLines("E:\\Research\\cold formed\\Program coding\\Input files Parametric\\materials.txt");
             ////var all_sections_txt = System.IO.File.ReadAllLines("E:\\Research\\cold formed\\Program coding\\Input files Parametric\\sections.txt");
@@ -2973,7 +2992,7 @@ namespace EigenValue_Problem
             //    }
             //    one_case += line + "\n";
             //}
-            //#endregion
+            #endregion
 
             ////Solve Cases
             //for (int i = 0; i < cases_nodes.Count; i++)
@@ -3055,7 +3074,11 @@ namespace EigenValue_Problem
                 return;
             }
 
-            MessageBox.Show(@"Solving started, note that this can take a couple of minutes, then you will be notified when it is done.");
+            if (!solvingMessageAppeared)
+            {
+                MessageBox.Show(@"Solving started, note that this can take a couple of minutes, then you will be notified when it is done.");
+                solvingMessageAppeared = true;
+            }
             //var cases = GetCases();
 
             if (!IsParametric) //if not clicked on perform parametric study

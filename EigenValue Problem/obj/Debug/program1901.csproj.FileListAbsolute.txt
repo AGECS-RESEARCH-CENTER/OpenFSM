@@ -347,3 +347,4 @@ E:\WORK\4-Freelancing\Marwan Khashaba\EigenValue Problem\EigenValue Problem\bin\
 E:\WORK\4-Freelancing\Marwan Khashaba\EigenValue Problem\EigenValue Problem\bin\Debug\Syncfusion.Chart.Windows.dll
 E:\WORK\4-Freelancing\Marwan Khashaba\EigenValue Problem\EigenValue Problem\bin\Debug\Syncfusion.Chart.Base.xml
 E:\WORK\4-Freelancing\Marwan Khashaba\EigenValue Problem\EigenValue Problem\bin\Debug\Syncfusion.Chart.Windows.xml
+E:\WORK\4-Freelancing\Marwan Khashaba\EigenValue Problem\EigenValue Problem\obj\Debug\program1901.csproj.AssemblyReference.cache
